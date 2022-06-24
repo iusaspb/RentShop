@@ -1,0 +1,35 @@
+= RentShop
+
+This project is created to compare *JPA* vs *Reactive*  to
+work with a relational database (*PostgreSQL*) on a standard task of
+managing a cart with products for renting.
+
+Let's describe the main entities of the model.
+
+*Product* is what is rented.
+
+*Item* is an product instance that can be rented.
+
+*Contractor* is the one who rents the product.
+Contractor creates an order (a cart) to which products are added for a certain rental period at the current price.
+Each product may have its own rental period.
+While the order is not completed where you can add or remove products.
+As soon as the order is completed, the contractor starts using these product.
+Once all items have been returned, the order will be closed.
+
+Below is a diagram of the main entities.
+
+image::image-2022-06-24-18-47-06-707.png[]
+
+The project uses *Spring Framework* and *maven*.
+
+The project contains
+. jpa
+. react
+modules
+
+The database is *PostgreSQL 14.3*. The script for creating the database
+and objects is
+
+`common\src\main\resources\create_postgres_db.sql`
+
