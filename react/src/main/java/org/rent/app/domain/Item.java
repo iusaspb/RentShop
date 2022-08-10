@@ -11,7 +11,6 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 /**
@@ -39,7 +38,7 @@ public class Item {
     /**
      * is not used in this example
      */
-    Long pickupCenterId;
+    Long storeId;
     /**
      * an identifier among instances of a given
      * @see Product

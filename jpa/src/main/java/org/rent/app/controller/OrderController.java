@@ -9,6 +9,7 @@ import org.rent.app.service.OrderActionResponse;
 import org.rent.app.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ import java.util.function.Supplier;
  */
 @RestController
 @RequestMapping("order/")
+@Transactional
 public class OrderController {
     private static final OrderMapper MAPPER = OrderMapper.INSTANCE;
     @Autowired
@@ -50,22 +52,22 @@ public class OrderController {
         return MAPPER.toDto(service.findById(id));
     }
 
-    @ApiOperation("Get contractor orders")
-    @GetMapping("contractor/{id}")
-    public Collection<OrderDto> getByContractor(@PathVariable Long id) {
-        return MAPPER.toDtos(service.findByContractor(id));
+    @ApiOperation("Get client orders")
+    @GetMapping("client/{id}")
+    public Collection<OrderDto> getByClient(@PathVariable Long clientId) {
+        return MAPPER.toDtos(service.findByClient(clientId));
     }
 
     @ApiOperation("Create new order")
     @PostMapping()
-    public OrderDto create(@RequestParam(required=false) Long  contractorId) {
-        return MAPPER.toDto(service.create(contractorId));
+    public OrderDto create(@RequestParam(required=false) Long  clientId) {
+        return MAPPER.toDto(service.create(clientId));
     }
 
     @ApiOperation("Add product to the order")
     @PutMapping("{orderId}")
     public OrderActionResponseDto addProd(@PathVariable Long orderId, @RequestBody @Validated  AddProdRequest addProdReq) {
-        return MAPPER.toActionResponseDto(optLockWarp(orderId, ()-> service.addProd(orderId, addProdReq)));
+        return MAPPER.toActionResponseDto(optLockWarp(orderId, ()-> service.addProduct(orderId, addProdReq)));
     }
 
     @ApiOperation("Remove product from the order")

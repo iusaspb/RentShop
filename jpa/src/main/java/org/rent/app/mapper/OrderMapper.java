@@ -23,7 +23,7 @@ import java.util.Collection;
 @Mapper
 public interface OrderMapper {
     OrderMapper INSTANCE = Mappers.getMapper( OrderMapper.class );
-    @Mapping(target = "contractorId", source = "contractor.id")
+    @Mapping(target = "clientId", source = "client.id")
     OrderDto toDto(Order entity);
 
     @Mapping(target = "productId", source = "item.product.id")
@@ -31,5 +31,5 @@ public interface OrderMapper {
 
     Collection<OrderDto> toDtos(Collection<Order> entities);
 
-    OrderActionResponseDto toActionResponseDto(OrderActionResponse actionREsponse);
+    OrderActionResponseDto toActionResponseDto(OrderActionResponse actionResponse);
 }

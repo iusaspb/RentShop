@@ -12,26 +12,26 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * Contractor
+ * Client
  * <p>
- *     Contractor entity
+ *     Client entity
  * </p>
  *
  * @author Sergey Yurkevich ysaspb@gmail.com
  * @since 24.06.2022
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Entity
-public class Contractor extends EntityId {
+@EqualsAndHashCode(callSuper = true)
+public class Client extends EntityId {
     @NotBlank
     String name;
     Long latitude;
     Long longitude;
     /**
-     * Collection of contractor's orders
+     * Collection of client's orders
      */
     @NotNull
-    @OneToMany(fetch = FetchType.LAZY,mappedBy="contractor",cascade = CascadeType.ALL,orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy="client",cascade = CascadeType.ALL,orphanRemoval=true)
     List<Order> orders = new ArrayList<>();
 }

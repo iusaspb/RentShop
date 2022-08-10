@@ -29,28 +29,28 @@ CREATE TABLE "owner" (
 INSERT INTO "owner" (latitude, longitude, "name") VALUES( 0.1, 0.2, 'owner');
 
 
-DROP TABLE IF EXISTS contractor CASCADE;
-CREATE TABLE contractor (
+DROP TABLE IF EXISTS client CASCADE;
+CREATE TABLE client (
 	id SERIAL,
 	latitude real,
 	longitude real,
 	"name" varchar NOT NULL,
-	CONSTRAINT contractor_pk PRIMARY KEY (id)
+	CONSTRAINT client_pk PRIMARY KEY (id)
 );
 
-INSERT INTO contractor (latitude, longitude, "name") VALUES( 1.1, 1.2, 'contractor');
+INSERT INTO client (latitude, longitude, "name") VALUES( 1.1, 1.2, 'client');
 
 
-DROP TABLE IF EXISTS pickup_center;
-CREATE TABLE pickup_center (
+DROP TABLE IF EXISTS store;
+CREATE TABLE store (
 	id SERIAL,
 	latitude float4,
 	longitude float4,
 	"name" varchar NOT NULL,
-	CONSTRAINT pickup_center_pk PRIMARY KEY (id)
+	CONSTRAINT store_pk PRIMARY KEY (id)
 );
 
-INSERT INTO pickup_center (latitude, longitude, "name") VALUES( 0.3, 0.4, 'pickup_center');
+INSERT INTO store (latitude, longitude, "name") VALUES( 0.3, 0.4, 'store');
 
 DROP TABLE IF EXISTS product CASCADE;
 CREATE TABLE product (
@@ -71,16 +71,13 @@ ALTER TABLE product ADD CONSTRAINT product_owner_fk FOREIGN KEY (owner_id) REFER
 
 
 INSERT INTO product ("name", description, brand, category_id, owner_id, price)
-SELECT 'prodcut1', 'description1', 'brand1', category.id as category_id, "owner".id as owner_id,100 FROM  "owner", category where category."name" ='c1' ;
-
-
-SELECT id FROM  "owner" ;
+SELECT 'product1', 'description1', 'brand1', category.id as category_id, "owner".id as owner_id,100 FROM  "owner", category where category."name" ='c1' ;
 
 DROP TABLE IF EXISTS item CASCADE;
 CREATE TABLE item (
 	id SERIAL,
 	product_id table_id NOT NULL,
-	pickup_center_id table_id,
+	store_id table_id,
 	serial_num varchar,
 	available_intervals varchar NOT NULL,
 	available_intervals_react varchar[] NOT NULL,
@@ -92,7 +89,7 @@ COMMENT ON COLUMN item.available_intervals IS 'it is used in jpa case';
 
 
 ALTER TABLE item ADD CONSTRAINT item_product_fk FOREIGN KEY (product_id) REFERENCES product(id);
-ALTER TABLE item ADD CONSTRAINT item_pickup_center_fk FOREIGN KEY (pickup_center_id) REFERENCES pickup_center(id);
+ALTER TABLE item ADD CONSTRAINT item_store_fk FOREIGN KEY (store_id) REFERENCES store(id);
 
 
 INSERT INTO item (product_id, available_intervals,available_intervals_react)
@@ -102,8 +99,8 @@ SELECT id as product_id, '2022-01-01;2022-12-30', '{2022-01-01;2022-12-30}' FROM
 DROP TABLE IF EXISTS "order" CASCADE;
 CREATE TABLE "order" (
 	id SERIAL,
-	contractor_id table_id NOT NULL,
-	pickup_center_id table_id,
+	client_id table_id NOT NULL,
+	store_id table_id,
 	amount int4 NOT NULL DEFAULT 0,
 	status varchar NOT NULL,
 	updated timestamp NOT NULL DEFAULT now(),
@@ -112,8 +109,8 @@ CREATE TABLE "order" (
 );
 
 
-ALTER TABLE "order" ADD CONSTRAINT order_contractor_fk FOREIGN KEY (contractor_id) REFERENCES contractor(id);
-ALTER TABLE "order" ADD CONSTRAINT order_pickup_center_fk FOREIGN KEY (pickup_center_id) REFERENCES pickup_center(id);
+ALTER TABLE "order" ADD CONSTRAINT order_client_fk FOREIGN KEY (client_id) REFERENCES client(id);
+ALTER TABLE "order" ADD CONSTRAINT order_store_fk FOREIGN KEY (store_id) REFERENCES store(id);
 
 
 DROP TABLE IF EXISTS order_hist;

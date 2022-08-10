@@ -1,7 +1,7 @@
 package org.rent.app.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.rent.app.domain.Contractor;
+import org.rent.app.domain.Client;
 import org.rent.app.domain.Order;
 import org.rent.app.domain.OrderItem;
 import org.rent.app.domain.OrderStatus;
@@ -34,7 +34,7 @@ import java.util.Objects;
 @Slf4j
 public class OrderService {
     @Autowired
-    private ContractorService contractorService;
+    private ClientService ClientService;
     @Autowired
     private OrderRepository repository;
 
@@ -42,11 +42,11 @@ public class OrderService {
     private ProductRepository productRepository;
 
     public Order findById(@NotNull Long orderId) {
-        return repository.findById(orderId).orElse(null);
+        return repository.findWithItemsById(orderId).orElse(null);
     }
 
-    public Collection<Order> findByContractor(@NotNull Long contractorId) {
-        return repository.findAllByContractorId(contractorId);
+    public Collection<Order> findByClient(@NotNull Long clientId) {
+        return repository.findAllByClientId(clientId);
     }
     public  Collection<Order> getAll() {
         return repository.findAll();
@@ -54,16 +54,16 @@ public class OrderService {
 
     /**
      * Create new order for
-     * @param contractorId
+     * @param clientId
      * @return created order
      */
     @Transactional
-    public Order create(Long contractorId) {
-        Contractor contractor = Objects.nonNull(contractorId)
-                ?contractorService.findById(contractorId)
-                :contractorService.getCurrent();
+    public Order create(Long clientId) {
+        Client client = Objects.nonNull(clientId)
+                ?ClientService.findById(clientId)
+                :ClientService.getCurrent();
         return repository.save(Order.builder()
-                .contractor(contractor)
+                .client(client)
                 .build());
     }
     /**
@@ -78,7 +78,7 @@ public class OrderService {
      * </ul>
      */
     @Transactional
-    public OrderActionResponse addProd(@NotNull Long orderId, @NotNull AddProdRequest prodReq) {
+    public OrderActionResponse addProduct(@NotNull Long orderId, @NotNull AddProdRequest prodReq) {
         Order order = repository.getReferenceById(orderId);
         if (!OrderStatus.IN_PROGRESS.equals(order.getStatus())) {
             throw new IllegalStateException(String.format("Incorrect Status %s",order.getStatus()));

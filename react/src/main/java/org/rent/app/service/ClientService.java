@@ -3,20 +3,20 @@ package org.rent.app.service;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 /**
- * ContractorService
+ * ClientService
  * <p>
- *     Contractor Service
+ *     Client Service
  * </p>
  *
  * @author Sergey Yurkevich ysaspb@gmail.com
  * @since 24.06.2022
  */
 @Service
-public class ContractorService {
+public class ClientService {
     /**
-     *  As we do not use Contractor in this example
+     *  As we do not use Client in this example
      *  This method
-     * @return  current/default Contractor
+     * @return  current/default Client
      */
     public Mono<Long> getCurrent(){
         return Mono.just(1L);

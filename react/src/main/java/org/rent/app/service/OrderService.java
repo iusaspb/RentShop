@@ -32,7 +32,7 @@ import java.util.Objects;
 @Service
 public class OrderService {
     @Autowired
-    private ContractorService contractorService;
+    private ClientService clientService;
     @Autowired
     private OrderRepository repository;
     @Autowired
@@ -45,8 +45,8 @@ public class OrderService {
     public Mono<Order> findById(@NotNull Long orderId) {
         return repository.findById(orderId);
     }
-    public Flux<Order> findByContractor(@NotNull Long contractorId) {
-        return repository.findAllByContractorId(contractorId);
+    public Flux<Order> findByClient(@NotNull Long clientId) {
+        return repository.findAllByClientId(clientId);
     }
     public Flux<Order> getAll() {
         return repository.findAll();
@@ -54,20 +54,20 @@ public class OrderService {
 
     /**
      * Create new order for
-     * @param contractorId
+     * @param clientId
      * @return created order
      */
     @Transactional
-    public Mono<Order> create(Long contractorId) {
-        return (Objects.nonNull(contractorId)
-                ? Mono.just(contractorId)
-                : contractorService.getCurrent()
-                ).flatMap(id -> repository.save((Order.builder().contractorId(id).build())));
+    public Mono<Order> create(Long clientId) {
+        return (Objects.nonNull(clientId)
+                ? Mono.just(clientId)
+                : clientService.getCurrent()
+                ).flatMap(id -> repository.save((Order.builder().clientId(id).build())));
     }
 
     /**
      *
-     * Add an product to
+     * Add a product to
      * @param orderId
      * @param prodReq
      * @return OrderActionResponse with status
@@ -118,25 +118,33 @@ public class OrderService {
      */
     @Transactional
     public Mono<OrderActionResponse> removeItem(@NotNull Long orderId, @NotNull Long orderItemId) {
-        return getOrderOfStatus(orderId, OrderStatus.IN_PROGRESS)
-                .then(orderItemRepository.findById(orderItemId))
+        return orderItemRepository
+                .findById(orderItemId)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Could not find orderItem")))
-                //save item with changed available intervals
-                .flatMap(orderItem ->
-                        itemRepository.findById(orderItem.getItemId()).zipWith(Mono.just(orderItem.getRentPeriod()),
-                                this::releaseRentPeriod))
-                .flatMap(itemRepository::save)
+                .filter(orderItem->orderId.equals(orderItem.getOrderId()))
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("orderItem.orderId <> param orderId")))
+                // delete orderItem
+                .flatMap(orderItem->orderItemRepository.deleteById(orderItemId).thenReturn(orderItem))
+                //update item's available intervals
+                .flatMap(orderItem->
+                           itemRepository
+                                .findById(orderItem.getItemId())
+                                .map(item-> this.releaseRentPeriod(item, orderItem.getRentPeriod()))
+                                .flatMap(item->itemRepository.save(item)).thenReturn(orderItem))
                 //decrease the order amount with the removed product
-                .then(repository.findById(orderId).zipWith(orderItemRepository.findById(orderItemId).map(OrderItem::getPrice),
-                        this::decOrderAmount
-                ))
-                .flatMap(repository::save)
-                // delete an order item for the removed product
-                .then(orderItemRepository.deleteById(orderItemId))
-                .then(repository.findById(orderId))
-                .map(order -> OrderActionResponse.builder().data(order).status(OrderActionResponse.Status.OK).build());
+                .flatMap(orderItem->
+                          repository
+                                  .findById(orderItem.getOrderId())
+                                  .filter(order-> OrderStatus.IN_PROGRESS == order.getStatus())
+                                  .switchIfEmpty(Mono.error(new IllegalArgumentException("order has unexpected status")))
+                                  .map(order-> this.decOrderAmount(order, orderItem.getPrice()))
+                                  .flatMap(order->repository.save(order)))
+                .map(order->
+                        OrderActionResponse.builder()
+                                .data(order)
+                                .status(OrderActionResponse.Status.OK)
+                                .build());
     }
-
     /**
      * Complete an order. The order is closed for add/remove since this call.
      * @param orderId

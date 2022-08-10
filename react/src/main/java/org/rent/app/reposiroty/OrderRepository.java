@@ -13,5 +13,5 @@ import reactor.core.publisher.Flux;
  * @since 24.06.2022
  */
 public interface OrderRepository extends ReactiveCrudRepository<Order, Long> {
-    Flux<Order> findAllByContractorId(Long contractorId);
+    Flux<Order> findAllByClientId(Long clientId);
 }

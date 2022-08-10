@@ -1,0 +1,13 @@
+# Intellij
+.idea
+*.iws
+*.iml
+*.ipr
+
+# maven
+/log/
+/common/target/
+/jpa/target/
+/react/target/
+/elk/
+/jpa-elk/

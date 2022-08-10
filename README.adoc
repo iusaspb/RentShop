@@ -16,15 +16,15 @@ Let's describe the main entities of the model.
 
 *Contractor* is the one who rents the product.
 
-*Order* (a cart) is created by a *contractor* to added *products* for renting.
+*Order* (a cart) is created by a *client* to added *products* for renting.
 Each *product* may have its own rental period.
-While the *order* is not completed  the *contractor* can add or remove *products*.
-As soon as the *order* is completed, the *contractor* starts using these *products*.
+While the *order* is not completed  the *client* can add or remove *products*.
+As soon as the *order* is completed, the *client* starts using these *products*.
 Once all *products* have been returned, the *order* will be closed.
 
 Below is a diagram of the main entities.
 
-image::image-2022-06-24-18-47-06-707.png[]
+image::Rent Shop 2022-08-10.jpg[]
 
 The project uses *Spring Framework* and *maven*.
 

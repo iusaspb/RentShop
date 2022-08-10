@@ -36,11 +36,11 @@ public class Order {
      *  is not used in this example
      */
     @NotNull
-    Long contractorId;
+    Long clientId;
     /**
      *  is not used in this example
      */
-    Long pickupCenterId;
+    Long storeId;
     /**
      *  current total of the order
      */

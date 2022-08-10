@@ -22,8 +22,8 @@ public class AddProdRequest {
     * @see org.rent.app.domain.Product
     */
    @NotNull
-   Long prodId;
+   private Long prodId;
    @ApiModelProperty("rental period: fromDate included toDate excluded")
    @NotNull
-   DateInterval rentPeriod;
+   private DateInterval rentPeriod;
 }

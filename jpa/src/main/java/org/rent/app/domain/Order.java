@@ -44,9 +44,9 @@ import java.util.List;
 public class Order extends EntityId {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    Contractor contractor;
+    Client client;
     @ManyToOne(fetch = FetchType.LAZY)
-    PickupCenter pickupCenter;
+    Store store;
     /**
      * Collection of order items of the order
      */
@@ -72,5 +72,4 @@ public class Order extends EntityId {
         amount-=price;
         return amount;
     }
-
 }

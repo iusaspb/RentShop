@@ -28,7 +28,7 @@ public class Item extends EntityId {
     @ManyToOne(fetch = FetchType.LAZY)
     Product product;
     @ManyToOne(fetch = FetchType.LAZY)
-    PickupCenter pickupCenter;
+    Store store;
     String serialNum;
     /**
      * a collection of intervals in witch an item can be rented

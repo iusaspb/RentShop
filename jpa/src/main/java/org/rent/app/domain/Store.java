@@ -8,11 +8,11 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
 /**
- * PickupCenter
+ * Store
  * <p>
- *     PickupCenter entity
+ *     Store entity
  * </p>
  *
  * @author Sergey Yurkevich ysaspb@gmail.com
@@ -24,7 +24,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Getter
 @Entity
-public class PickupCenter extends EntityId {
+public class Store extends EntityId {
     @NotBlank
     String name;
     Long latitude;

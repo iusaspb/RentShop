@@ -45,16 +45,16 @@ public class OrderController {
     @GetMapping("{id}")
     public Mono<Order> getById(@PathVariable Long id) { return service.findById(id);}
 
-    @ApiOperation("Get contractor orders")
-    @GetMapping("contractor/{id}")
-    public Flux<Order> getByContractor(@PathVariable Long id) {
-        return service.findByContractor(id);
+    @ApiOperation("Get client orders")
+    @GetMapping("client/{id}")
+    public Flux<Order> getByClient(@PathVariable Long clientId) {
+        return service.findByClient(clientId);
     }
 
     @ApiOperation("Create new order")
     @PostMapping()
-    public Mono<Order> create(@RequestParam(required=false) Long  contractorId) {
-        return service.create(contractorId);
+    public Mono<Order> create(@RequestParam(required=false) Long  clientId) {
+        return service.create(clientId);
     }
 
     @ApiOperation("Add product to the order")

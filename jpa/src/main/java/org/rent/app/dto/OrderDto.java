@@ -1,6 +1,7 @@
 package org.rent.app.dto;
 
 import lombok.Data;
+import org.rent.app.domain.Client;
 import org.rent.app.domain.OrderStatus;
 
 import javax.validation.constraints.NotNull;
@@ -20,10 +21,10 @@ public class OrderDto {
     @NotNull
     Long id;
     /**
-     * @see org.rent.app.domain.Contractor
+     * @see Client
      */
     @NotNull
-    Long contractorId;
+    Long clientId;
     @NotNull
     Collection<OrderItemDto> items;
     @PositiveOrZero
